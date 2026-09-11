@@ -1,1768 +1,353 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Akenna — Technical Review</title>
-
-<style>
-:root{
-    --ink:#1b273d;
-    --muted:#687994;
-    --line:#d5deea;
-    --blue:#3974ff;
-    --green:#009d87;
-    --red:#f04444;
-    --amber:#c88300;
-    --paper:#fff;
-    --soft:#f5f7fa;
-    --redbg:#fff0f0;
-    --greenbg:#eaf8f5;
-    --bluebg:#f1f5ff;
-    --amberbg:#fff8e9
-}
-
-*{
-    box-sizing:border-box
-}
-
-html{
-    background:#eef1f5;
-    scroll-behavior:smooth
-}
-
-body{
-    margin:0;
-    color:var(--ink);
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:13px;
-    line-height:1.42
-}
-
-.page{
-    width:210mm;
-    min-height:297mm;
-    margin:18px auto;
-    background:var(--paper);
-    padding:13mm 18mm 14mm;
-    position:relative;
-    overflow:hidden;
-    box-shadow:0 3px 18px rgba(20,35,60,.09)
-}
-
-.top{
-    height:9mm;
-    border-bottom:1px solid var(--line);
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    font-weight:700;
-    font-size:12px
-}
-
-.top .right{
-    color:#607394
-}
-
-.eyebrow{
-    color:var(--blue);
-    font-weight:700;
-    letter-spacing:.2px;
-    margin-top:9mm;
-    text-transform:uppercase
-}
-
-.eyebrow.green{
-    color:var(--green)
-}
-
-h1{
-    font-size:40px;
-    line-height:1.06;
-    letter-spacing:-1.1px;
-    margin:10px 0 10px;
-    font-weight:700
-}
-
-h2{
-    font-size:18px;
-    margin:0 0 8px
-}
-
-p{
-    margin:0
-}
-
-.subtitle{
-    font-size:15px;
-    color:var(--muted);
-    margin-bottom:42px
-}
-
-.section-title{
-    font-size:13px;
-    color:var(--green);
-    font-weight:700;
-    text-transform:uppercase;
-    margin-bottom:13px
-}
-
-.footer{
-    position:absolute;
-    bottom:9mm;
-    left:18mm;
-    right:18mm;
-    display:flex;
-    justify-content:space-between;
-    color:#6d7d98;
-    font-size:11px
-}
-
-.box{
-    border:1px solid var(--line);
-    border-radius:16px;
-    background:var(--soft);
-    padding:18px
-}
-
-.box p{
-    font-size:15px;
-    line-height:1.5
-}
-
-.priority{
-    margin-top:36px
-}
-
-.priority-row{
-    display:grid;
-    grid-template-columns:48px 1fr auto;
-    gap:14px;
-    align-items:center;
-    margin:0 0 37px
-}
-
-.num{
-    font-weight:700
-}
-
-.priority-row strong{
-    font-size:16px
-}
-
-.priority-row .desc{
-    font-size:14px;
-    margin-top:2px
-}
-
-.pill{
-    border:1px solid;
-    border-radius:20px;
-    padding:2px 11px;
-    font-weight:700;
-    font-size:11px;
-    white-space:nowrap
-}
-
-.critical{
-    color:var(--red)
-}
-
-.high{
-    color:var(--amber)
-}
-
-.medium{
-    color:var(--blue)
-}
-
-.small-head{
-    color:var(--green);
-    font-weight:700;
-    text-transform:uppercase;
-    margin-top:18px;
-    margin-bottom:8px
-}
-
-.small-copy{
-    font-size:14px;
-    line-height:1.55
-}
-
-/* =========================
-   CURRENT DIAGRAM
-   ========================= */
-
-.diagram{
-    margin-top:40px
-}
-
-.diagram-row{
-    display:grid;
-    grid-template-columns:1fr 1.45fr 1fr;
-    gap:75px;
-    align-items:center
-}
-
-.node{
-    border:1px solid var(--line);
-    border-radius:14px;
-    background:#f6f8fb;
-    padding:12px 12px;
-    text-align:center;
-    min-height:82px;
-    position:relative
-}
-
-.node.blue{
-    border:1.5px solid var(--blue);
-    background:#f0f4ff
-}
-
-.node.red{
-    border:1.5px solid var(--red);
-    background:#fff0f0
-}
-
-.node strong{
-    display:block;
-    font-size:15px
-}
-
-.node span{
-    display:block;
-    color:var(--muted);
-    font-size:12px;
-    margin-top:6px
-}
-
-.arrow{
-    height:1.5px;
-    background:var(--ink);
-    position:relative
-}
-
-.arrow:after{
-    content:"";
-    position:absolute;
-    right:-1px;
-    top:-4px;
-    border-left:8px solid var(--ink);
-    border-top:5px solid transparent;
-    border-bottom:5px solid transparent
-}
-
-.diagram-grid{
-    display:grid;
-    grid-template-columns:1fr 1.2fr 1fr;
-    gap:75px;
-    align-items:start
-}
-
-.middle-stack{
-    position:relative
-}
-
-.down-label{
-    text-align:center;
-    color:var(--red);
-    font-style:italic;
-    font-size:12px;
-    margin:34px 0 20px
-}
-
-.current-bottom{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:60px;
-    margin-top:0
-}
-
-.caption-head{
-    font-weight:700;
-    color:#65758f;
-    text-transform:uppercase;
-    margin-top:26px
-}
-
-.caption{
-    color:#687994;
-    font-style:italic;
-    margin-top:17px;
-    line-height:1.45
-}
-
-.issue{
-    border:1px solid var(--red);
-    background:var(--redbg);
-    border-radius:10px;
-    padding:12px 14px;
-    margin-top:9px
-}
-
-.issue strong{
-    color:var(--red);
-    display:block;
-    margin-bottom:5px
-}
-
-.issue p{
-    font-size:13px
-}
-
-.two-col-list{
-    margin-top:27px
-}
-
-.list-row{
-    display:grid;
-    grid-template-columns:160px 1fr;
-    gap:18px;
-    margin-bottom:19px
-}
-
-.list-row strong{
-    font-size:14px
-}
-
-.list-row p{
-    font-size:13px
-}
-
-/* =========================
-   PROPOSED DIAGRAM
-   ========================= */
-
-.proposed{
-    margin-top:38px
-}
-
-.proposed-diagram{
-    position:relative
-}
-
-.proposed-flow{
-    display:grid;
-    grid-template-columns:1fr 42px 1.35fr 42px 1fr;
-    align-items:center;
-    gap:0
-}
-
-.proposed-flow .node{
-    min-height:82px
-}
-
-.proposed-arrow{
-    height:2px;
-    background:var(--ink);
-    position:relative;
-    margin:0 5px
-}
-
-.proposed-arrow:after{
-    content:"";
-    position:absolute;
-    right:-1px;
-    top:-4px;
-    border-left:8px solid var(--ink);
-    border-top:5px solid transparent;
-    border-bottom:5px solid transparent
-}
-
-.uuid-label{
-    text-align:center;
-    color:var(--green);
-    font-style:italic;
-    font-size:12px;
-    margin-top:13px
-}
-
-.oci-wrap{
-    position:relative;
-    margin:15px 40px 0
-}
-
-.oci-connector{
-    width:2px;
-    height:34px;
-    background:var(--green);
-    margin:0 auto;
-    position:relative
-}
-
-.oci-connector:after{
-    content:"";
-    position:absolute;
-    bottom:-1px;
-    left:-4px;
-    border-top:8px solid var(--green);
-    border-left:5px solid transparent;
-    border-right:5px solid transparent
-}
-
-.oci{
-    border:1.5px solid var(--green);
-    background:var(--greenbg);
-    border-radius:14px;
-    padding:10px 10px 14px;
-    margin:0
-}
-
-.oci-title{
-    color:var(--green);
-    font-weight:700;
-    margin-bottom:18px
-}
-
-.oci-grid{
-    display:grid;
-    grid-template-columns:1.25fr .9fr .9fr .9fr;
-    gap:18px
-}
-
-.oci .node{
-    border-color:var(--green);
-    background:white;
-    min-height:66px;
-    padding:10px
-}
-
-.oci .node strong{
-    font-size:12px
-}
-
-.oci .node span{
-    font-size:11px
-}
-
-.oci-node{
-    position:relative
-}
-
-.oci-node:not(:last-child):after{
-    content:"";
-    position:absolute;
-    width:18px;
-    height:2px;
-    background:var(--green);
-    right:-18px;
-    top:50%
-}
-
-.nat-connector{
-    width:2px;
-    height:34px;
-    background:var(--green);
-    margin:0 auto;
-    position:relative
-}
-
-.nat-connector:after{
-    content:"";
-    position:absolute;
-    bottom:-1px;
-    left:-4px;
-    border-top:8px solid var(--green);
-    border-left:5px solid transparent;
-    border-right:5px solid transparent
-}
-
-.nafath-row{
-    display:flex;
-    justify-content:flex-end;
-    margin:0 0
-}
-
-.nafath-row .node{
-    width:180px
-}
-
-.better{
-    margin-top:18px
-}
-
-.better-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-    margin-top:38px
-}
-
-.better .box{
-    padding:16px;
-    border-radius:12px
-}
-
-.better strong{
-    display:block;
-    margin-bottom:22px
-}
-
-.better p{
-    font-size:12.5px;
-    color:var(--ink)
-}
-
-/* =========================
-   TABLE
-   ========================= */
-
-.table{
-    margin-top:115px;
-    border-collapse:collapse;
-    width:100%;
-    font-size:12px
-}
-
-.table th{
-    background:#18243a;
-    color:#fff;
-    text-align:left;
-    padding:11px 8px;
-    text-transform:uppercase;
-    font-size:11px
-}
-
-.table td{
-    border:1px solid #d3dbe7;
-    padding:8px;
-    vertical-align:top;
-    line-height:1.28
-}
-
-.table tr.critical-row td{
-    background:#fff0f0
-}
-
-.table tr.high-row td{
-    background:#fff8e8
-}
-
-.table tr.medium-row td{
-    background:#f8fbff
-}
-
-.level{
-    font-weight:700
-}
-
-.rule{
-    border:1.5px solid var(--green);
-    background:var(--greenbg);
-    border-radius:10px;
-    padding:12px 14px;
-    margin-top:18px
-}
-
-.rule strong{
-    color:var(--green);
-    display:block;
-    text-transform:uppercase;
-    margin-bottom:5px
-}
-
-/* =========================
-   IMPLEMENTATION
-   ========================= */
-
-.steps{
-    margin-top:55px
-}
-
-.step{
-    display:grid;
-    grid-template-columns:48px 128px 1fr;
-    gap:14px;
-    margin-bottom:31px;
-    align-items:start
-}
-
-.step .n{
-    color:var(--blue);
-    font-weight:700
-}
-
-.step strong{
-    font-size:15px
-}
-
-.step p{
-    font-size:13.5px
-}
-
-.recovery{
-    border:1.5px solid var(--blue);
-    background:#f6f8fc;
-    padding:14px 18px;
-    margin:7px 0 37px
-}
-
-.recovery strong{
-    color:var(--blue);
-    display:block;
-    text-transform:uppercase;
-    margin-bottom:7px
-}
-
-.payments .step{
-    grid-template-columns:175px 1fr;
-    margin-bottom:24px
-}
-
-.payments .step .n{
-    display:none
-}
-
-/* =========================
-   MONITORING
-   ========================= */
-
-.monitor{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:42px;
-    margin-top:66px
-}
-
-.monitor h3{
-    font-size:13px;
-    text-transform:uppercase;
-    margin:0 0 18px
-}
-
-.alerts h3{
-    color:var(--red)
-}
-
-.cost h3{
-    color:#b87400
-}
-
-.intro{
-    color:var(--muted);
-    margin-bottom:20px
-}
-
-.alert{
-    border:1px solid #ffb7b7;
-    background:var(--redbg);
-    border-radius:11px;
-    padding:11px;
-    display:grid;
-    grid-template-columns:125px 1fr;
-    gap:10px;
-    margin-bottom:19px
-}
-
-.alert strong{
-    color:var(--red)
-}
-
-.cost-item{
-    margin-bottom:28px
-}
-
-.cost-item strong{
-    display:block;
-    margin-bottom:10px
-}
-
-.dashboard{
-    margin-top:60px
-}
-
-.dashboard .box{
-    margin-top:18px;
-    min-height:80px
-}
-
-.checklist{
-    margin-top:37px
-}
-
-.checks{
-    margin-top:18px;
-    display:grid;
-    gap:13px
-}
-
-.check{
-    font-size:13px
-}
-
-.check:before{
-    content:"";
-    display:inline-block;
-    width:8px;
-    height:8px;
-    border:1px solid #cad5e3;
-    border-radius:3px;
-    margin-right:9px;
-    vertical-align:1px
-}
-
-/* =========================
-   RESPONSIVE
-   ========================= */
-
-@media(max-width:900px){
-
-    html{
-        background:#fff
-    }
-
-    .page{
-        width:100%;
-        min-height:auto;
-        margin:0;
-        padding:32px 28px 70px;
-        box-shadow:none
-    }
-
-    .footer{
-        position:relative;
-        left:auto;
-        right:auto;
-        bottom:auto;
-        margin-top:55px
-    }
-
-    .diagram-row,
-    .diagram-grid{
-        grid-template-columns:1fr;
-        gap:18px
-    }
-
-    .arrow{
-        display:none
-    }
-
-    .oci{
-        margin:0
-    }
-
-    .oci-grid{
-        grid-template-columns:1fr 1fr
-    }
-
-    .oci-node:not(:last-child):after{
-        display:none
-    }
-
-    .table{
-        margin-top:55px
-    }
-
-    .monitor{
-        grid-template-columns:1fr
-    }
-
-    .step{
-        grid-template-columns:38px 110px 1fr
-    }
-
-    .subtitle{
-        margin-bottom:30px
-    }
-
-    .proposed-flow{
-        grid-template-columns:1fr;
-        gap:12px
-    }
-
-    .proposed-arrow{
-        width:2px;
-        height:28px;
-        margin:0 auto
-    }
-
-    .proposed-arrow:after{
-        top:auto;
-        bottom:-1px;
-        right:-4px;
-        border-left:5px solid transparent;
-        border-right:5px solid transparent;
-        border-top:8px solid var(--ink);
-        border-bottom:0
-    }
-
-    .oci-wrap{
-        margin:20px 0 0
-    }
-
-    .nafath-row{
-        justify-content:center
-    }
-}
-
-@media print{
-
-    html{
-        background:#fff
-    }
-
-    .page{
-        margin:0;
-        box-shadow:none;
-        break-after:page;
-        page-break-after:always
-    }
-
-    .page:last-child{
-        break-after:auto;
-        page-break-after:auto
-    }
-
-    @page{
-        size:A4;
-        margin:0
-    }
-}
-</style>
-
+    <meta charset="UTF-8">
+    <title>Akenna Technical Review</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --blue: #1d4ed8;
+            --blue-bg: #eff6ff;
+            --red: #b91c1c;
+            --red-bg: #fef2f2;
+            --green: #15803d;
+            --gray-bg: #f8fafc;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--primary);
+            line-height: 1.5;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background: #ffffff;
+        }
+        h2 { font-size: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-top: 40px; }
+        .section-title { font-size: 1.25rem; font-weight: 700; margin: 30px 0 15px 0; color: var(--primary); }
+        
+        /* Priority Rows */
+        .priority-row {
+            display: flex;
+            align-items: center;
+            background: var(--gray-bg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            gap: 16px;
+        }
+        .priority-row .num { font-weight: 700; color: #64748b; font-size: 1.1rem; }
+        .priority-row div { flex-grow: 1; }
+        .priority-row .desc { font-size: 0.9rem; color: #475569; margin-top: 2px; }
+        
+        /* Pills */
+        .pill {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .pill.critical { background: var(--red-bg); color: var(--red); border: 1px solid #fecaca; }
+        .pill.high { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+        .pill.medium { background: #fefce8; color: #a16207; border: 1px solid #fef08a; }
+
+        /* Diagrams */
+        .diagram-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+            align-items: center;
+        }
+        .node {
+            background: var(--gray-bg);
+            border: 1px solid var(--border);
+            padding: 14px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        .node strong { display: block; margin-bottom: 4px; font-size: 0.9rem; }
+        .node span { color: #64748b; font-size: 0.8rem; }
+        .node.blue { background: var(--blue-bg); border-color: #bfdbfe; color: var(--blue); }
+        .node.red { background: var(--red-bg); border-color: #fecaca; color: var(--red); }
+        
+        .down-label, .uuid-label {
+            text-align: center;
+            color: var(--red);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .uuid-label { color: var(--green); margin: 10px 0; }
+
+        /* OCI Wrapper Container */
+        .oci-wrap {
+            border: 2px dashed #86efac;
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .oci-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--green);
+            margin-bottom: 12px;
+            letter-spacing: 0.05em;
+        }
+        .oci-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .oci-node { background: #ffffff; }
+
+        /* Boxes & Lists */
+        .box {
+            background: var(--gray-bg);
+            border-left: 4px solid var(--blue);
+            padding: 14px 18px;
+            margin: 12px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .list-row {
+            margin-bottom: 16px;
+        }
+        .list-row strong { color: var(--primary); display: block; }
+        .list-row p { margin: 4px 0 0 0; color: #475569; }
+
+        /* Steps */
+        .step {
+            background: var(--gray-bg);
+            border: 1px solid var(--border);
+            padding: 14px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .step .n { font-weight: 700; color: var(--blue); margin-right: 8px; }
+
+        /* Checks grid */
+        .checks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .check {
+            background: var(--gray-bg);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .check::before {
+            content: "☑ ";
+            color: var(--green);
+            font-weight: bold;
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- =========================================================
-     PAGE 1
-     ========================================================= -->
+    <h2>Bottom line</h2>
+    <p>
+        Most of the stack is reasonable for a small, pre-revenue team.
+        I would leave the web, mobile and BaaS choices alone for now.
+        The part that needs attention is identity: a self-managed Postgres VM
+        in Riyadh is tied to an EU Supabase database with application-level
+        references. That creates both an outage risk and a data-residency risk.
+    </p>
 
-<section class="page">
+    <div class="section-title">Priority</div>
 
-<header class="top">
-    <span>AKENNA</span>
-    <span class="right">TECHNICAL REVIEW&nbsp;&nbsp;·&nbsp;&nbsp;SEPTEMBER 2026</span>
-</header>
+    <div class="priority-row">
+        <span class="num">01</span>
+        <div>
+            <strong>Identity database</strong>
+            <div class="desc">Move the Nafath data store off the single VM and onto managed PostgreSQL in KSA.</div>
+        </div>
+        <span class="pill critical">CRITICAL</span>
+    </div>
 
-<div class="eyebrow">Technical review</div>
+    <div class="priority-row">
+        <span class="num">02</span>
+        <div>
+            <strong>Cross-border link</strong>
+            <div class="desc">Keep the National ID in KSA. Supabase should hold only an opaque UUID.</div>
+        </div>
+        <span class="pill critical">CRITICAL</span>
+    </div>
 
-<h1>What I would fix first</h1>
+    <div class="priority-row">
+        <span class="num">03</span>
+        <div>
+            <strong>Nafath access</strong>
+            <div class="desc">Put credentials in Vault and use one fixed outbound IP for the government API.</div>
+        </div>
+        <span class="pill high">HIGH</span>
+    </div>
 
-<p class="subtitle">
-    A practical review of the current web, mobile, payments and identity setup.
-</p>
+    <div class="priority-row">
+        <span class="num">04</span>
+        <div>
+            <strong>Database connections</strong>
+            <div class="desc">Use Supavisor / pooled connections instead of direct 5432 connections from serverless functions.</div>
+        </div>
+        <span class="pill medium">MEDIUM</span>
+    </div>
 
-<div class="box">
-
-```
-<h2>Bottom line</h2>
-
-<p>
-    Most of the stack is reasonable for a small, pre-revenue team.
-    I would leave the web, mobile and BaaS choices alone for now.
-    The part that needs attention is identity: a self-managed Postgres VM
-    in Riyadh is tied to an EU Supabase database with application-level
-    references. That creates both an outage risk and a data-residency risk.
-</p>
-```
-
-</div>
-
-<div class="priority">
-
-```
-<div class="section-title">Priority</div>
-
-<div class="priority-row">
-    <span class="num">01</span>
-
-    <div>
-        <strong>Identity database</strong>
-        <div class="desc">
-            Move the Nafath data store off the single VM and onto managed PostgreSQL in KSA.
+    <div class="section-title">Current Setup & Flow</div>
+    <div class="diagram-row">
+        <div class="node">
+            <strong>CLIENTS</strong>
+            <span>Next.js / Vercel<br>Expo / React Native</span>
+        </div>
+        <div class="node blue">
+            <strong>SUPABASE (EU)</strong>
+            <span>Postgres · Auth · Storage<br>Edge Functions</span>
+        </div>
+        <div class="node">
+            <strong>MOYASAR / TABBY</strong>
+            <span>Cards · mada · Apple Pay<br>BNPL</span>
         </div>
     </div>
 
-    <span class="pill critical">CRITICAL</span>
-</div>
+    <div class="down-label">↓ cross-border reference ↓</div>
 
-<div class="priority-row">
-    <span class="num">02</span>
-
-    <div>
-        <strong>Cross-border link</strong>
-        <div class="desc">
-            Keep the National ID in KSA. Supabase should hold only an opaque UUID.
+    <div class="diagram-row" style="grid-template-columns: 1fr 1fr;">
+        <div class="node red">
+            <strong>RIYADH VM</strong>
+            <span>Self-managed Postgres<br>Nafath connector · no HA</span>
+        </div>
+        <div class="node">
+            <strong>ELM NAFATH</strong>
+            <span>Government identity API<br>External</span>
         </div>
     </div>
 
-    <span class="pill critical">CRITICAL</span>
-</div>
+    <h2>The main issue</h2>
+    <p>
+        If the EU database stores a reference to identity data in KSA,
+        you have two separate writes with a network hop between them.
+        A failure during that hand-off can leave a booking or user record
+        pointing at something that has not finished replicating.
+        It also creates a path for identity-linked data to appear in EU logs,
+        webhooks or caches.
+    </p>
 
-<div class="priority-row">
-    <span class="num">03</span>
-
-    <div>
-        <strong>Nafath access</strong>
-        <div class="desc">
-            Put credentials in Vault and use one fixed outbound IP for the government API.
-        </div>
+    <div class="list-row">
+        <strong>Two execution paths</strong>
+        <p>Booking and payment logic is split between Vercel functions and Supabase Edge Functions. Keep the business logic in one place; use Vercel mainly as the request layer.</p>
     </div>
-
-    <span class="pill high">HIGH</span>
-</div>
-
-<div class="priority-row">
-    <span class="num">04</span>
-
-    <div>
+    <div class="list-row">
+        <strong>Mobile identity releases</strong>
+        <p>Expo OTA updates cannot replace a native Nafath SDK. Identity-related native changes will still need an app-store release.</p>
+    </div>
+    <div class="list-row">
         <strong>Database connections</strong>
-        <div class="desc">
-            Use Supavisor / pooled connections instead of direct 5432 connections from serverless functions.
+        <p>Direct 5432 connections from serverless functions can exhaust Postgres connections and show up as intermittent 500s.</p>
+    </div>
+    <div class="list-row">
+        <strong>No staging environment</strong>
+        <p>The brief describes one Supabase project. A migration without a staging copy or rollback path is an avoidable release risk.</p>
+    </div>
+
+    <div class="section-title">Proposed Setup</div>
+    <div class="diagram-row">
+        <div class="node">
+            <strong>CLIENTS</strong>
+            <span>Next.js / Vercel<br>Expo / React Native</span>
+        </div>
+        <div class="node blue">
+            <strong>SUPABASE (EU)</strong>
+            <span>Platform data + UUID token</span>
+        </div>
+        <div class="node">
+            <strong>MOYASAR / TABBY</strong>
+            <span>Cards · mada · Apple Pay</span>
         </div>
     </div>
 
-    <span class="pill medium">MEDIUM</span>
-</div>
-```
+    <div class="uuid-label">UUID only ↓</div>
 
-</div>
-
-<div class="small-head">A few things I would not change yet</div>
-
-<p class="small-copy">
-    Next.js / Vercel, Expo / React Native, Supabase for platform data,
-    and the existing payment providers are all workable at this stage.
-    The goal should be to remove the failure modes that can block onboarding
-    or create a compliance problem, not to redesign the whole stack.
-</p>
-
-<div class="footer">
-    <span>01</span>
-    <span>Prepared for Akenna evaluation only</span>
-</div>
-
-</section>
-
-<!-- =========================================================
-     PAGE 2
-     ========================================================= -->
-
-<section class="page">
-
-<header class="top">
-    <span>AKENNA</span>
-    <span class="right">TECHNICAL REVIEW&nbsp;&nbsp;·&nbsp;&nbsp;SEPTEMBER 2026</span>
-</header>
-
-<div class="eyebrow">01 · Current setup</div>
-
-<h1>Where the risk sits</h1>
-
-<p class="subtitle">
-    The problem is not the number of services.
-    It is the boundary between EU application data and KSA identity data.
-</p>
-
-<div class="diagram">
-
-```
-<div class="diagram-row">
-
-    <div class="node">
-        <strong>CLIENTS</strong>
-        <span>
-            Next.js / Vercel<br>
-            Expo / React Native
-        </span>
-    </div>
-
-    <div class="node blue">
-        <strong>SUPABASE (EU)</strong>
-        <span>
-            Postgres · Auth · Storage<br>
-            Edge Functions
-        </span>
-    </div>
-
-    <div class="node">
-        <strong>MOYASAR / TABBY</strong>
-        <span>
-            Cards · mada · Apple Pay<br>
-            BNPL
-        </span>
-    </div>
-
-</div>
-
-<div style="
-    height:78px;
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:75px;
-    align-items:center
-">
-    <div></div>
-
-    <div class="down-label">
-        cross-border reference
-    </div>
-
-    <div></div>
-</div>
-
-<div class="diagram-row">
-
-    <div></div>
-
-    <div class="node red">
-        <strong>RIYADH VM</strong>
-        <span>
-            Self-managed Postgres<br>
-            Nafath connector · no HA
-        </span>
-    </div>
-
-    <div class="node">
-        <strong>ELM NAFATH</strong>
-        <span>
-            Government identity API<br>
-            External
-        </span>
-    </div>
-
-</div>
-```
-
-</div>
-
-<div class="caption-head">
-    Current setup
-</div>
-
-<p class="caption">
-    Figure 1. Two Postgres databases are operated separately and linked by
-    application-level references. The Riyadh VM is also a single point of
-    failure for Nafath onboarding.
-</p>
-
-<div class="issue">
-
-```
-<strong>The main issue</strong>
-
-<p>
-    If the EU database stores a reference to identity data in KSA,
-    you have two separate writes with a network hop between them.
-    A failure during that hand-off can leave a booking or user record
-    pointing at something that has not finished replicating.
-    It also creates a path for identity-linked data to appear in EU logs,
-    webhooks or caches.
-</p>
-```
-
-</div>
-
-<div class="caption-head">
-    Other things to fix
-</div>
-
-<div class="two-col-list">
-
-```
-<div class="list-row">
-    <strong>Two execution paths</strong>
-    <p>
-        Booking and payment logic is split between Vercel functions and
-        Supabase Edge Functions. Keep the business logic in one place;
-        use Vercel mainly as the request layer.
-    </p>
-</div>
-
-<div class="list-row">
-    <strong>Mobile identity releases</strong>
-    <p>
-        Expo OTA updates cannot replace a native Nafath SDK.
-        Identity-related native changes will still need an app-store release.
-    </p>
-</div>
-
-<div class="list-row">
-    <strong>Database connections</strong>
-    <p>
-        Direct 5432 connections from serverless functions can exhaust
-        Postgres connections and show up as intermittent 500s.
-    </p>
-</div>
-
-<div class="list-row">
-    <strong>No staging environment</strong>
-    <p>
-        The brief describes one Supabase project.
-        A migration without a staging copy or rollback path is an avoidable release risk.
-    </p>
-</div>
-```
-
-</div>
-
-<div class="footer">
-    <span>02</span>
-    <span>Prepared for Akenna evaluation only</span>
-</div>
-
-</section>
-
-<!-- =========================================================
-     PAGE 3
-     ========================================================= -->
-
-<section class="page">
-
-<header class="top">
-    <span>AKENNA</span>
-    <span class="right">TECHNICAL REVIEW&nbsp;&nbsp;·&nbsp;&nbsp;SEPTEMBER 2026</span>
-</header>
-
-<div class="eyebrow">02 · Identity</div>
-
-<h1>A simpler boundary</h1>
-
-<p class="subtitle">
-    The clean version is straightforward:
-    Supabase gets a UUID; KSA keeps the actual identity record.
-</p>
-
-<div class="diagram proposed-diagram">
-
-```
-<!-- Main top row -->
-
-<div class="proposed-flow">
-
-    <div class="node">
-        <strong>CLIENTS</strong>
-        <span>
-            Next.js / Vercel<br>
-            Expo / React Native
-        </span>
-    </div>
-
-    <div class="proposed-arrow"></div>
-
-    <div class="node blue">
-        <strong>SUPABASE (EU)</strong>
-        <span>
-            Platform data + UUID token
-        </span>
-    </div>
-
-    <div class="proposed-arrow"></div>
-
-    <div class="node">
-        <strong>MOYASAR / TABBY</strong>
-        <span>
-            Cards · mada · Apple Pay
-        </span>
-    </div>
-
-</div>
-
-<div class="uuid-label">
-    UUID only ↓
-</div>
-
-<!-- KSA infrastructure -->
-
-<div class="oci-wrap">
-
-    <div class="oci-connector"></div>
-
-    <div class="oci">
-
-        <div class="oci-title">
-            OCI · RIYADH / JEDDAH · IN-KINGDOM
-        </div>
-
+    <div class="oci-wrap">
+        <div class="oci-title">OCI · RIYADH / JEDDAH · IN-KINGDOM</div>
         <div class="oci-grid">
-
             <div class="node oci-node">
                 <strong>CONTAINER</strong>
-                <span>
-                    Nafath connector · scale-to-zero
-                </span>
+                <span>Nafath connector · scale-to-zero</span>
             </div>
-
             <div class="node oci-node">
                 <strong>POSTGRES</strong>
-                <span>
-                    HA + backups
-                </span>
+                <span>HA + backups</span>
             </div>
-
             <div class="node oci-node">
                 <strong>VAULT</strong>
-                <span>
-                    Runtime secrets
-                </span>
+                <span>Runtime secrets</span>
             </div>
-
             <div class="node oci-node">
                 <strong>NAT</strong>
-                <span>
-                    Static egress IP
-                </span>
+                <span>Static egress IP</span>
             </div>
-
         </div>
-
     </div>
 
-    <div class="nat-connector"></div>
+    <div style="text-align: center; margin: 10px 0;">↓</div>
 
-    <div class="nafath-row">
-
-        <div class="node red">
-
-            <strong>ELM NAFATH</strong>
-
-            <span>
-                Government identity API
-            </span>
-
-        </div>
-
+    <div class="node red" style="max-width: 300px; margin: 0 auto;">
+        <strong>ELM NAFATH</strong>
+        <span>Government identity API</span>
     </div>
 
-</div>
-```
-
-</div>
-
-<div class="caption-head">
-    Proposed setup
-</div>
-
-<p class="caption">
-    Figure 2. Supabase keeps only the opaque identifier.
-    The KSA database is the only place that stores the National ID.
-    The Nafath connector, database, secrets and outbound network path
-    all stay inside one OCI tenancy.
-</p>
-
-<div class="section-title" style="margin-top:17px">
-    Why this is better
-</div>
-
-<div class="better-grid">
-
-```
-<div class="box">
-    <strong>Identity stays in KSA</strong>
-    <p>
-        There is no application-level join from the EU database
-        into the identity database.
-    </p>
-</div>
-
-<div class="box">
-    <strong>One place to operate</strong>
-    <p>
-        OCI handles the connector, database, secrets and network path
-        instead of a manually maintained VM.
-    </p>
-</div>
-
-<div class="box">
-    <strong>Failures are contained</strong>
-    <p>
-        A container restart does not change the Nafath whitelist IP,
-        and the database is not exposed with a public IP.
-    </p>
-</div>
-```
-
-</div>
-
-<div class="footer">
-    <span>03</span>
-    <span>Prepared for Akenna evaluation only</span>
-</div>
-
-</section>
-
-<!-- =========================================================
-     PAGE 4
-     ========================================================= -->
-
-<section class="page">
-
-<header class="top">
-    <span>AKENNA</span>
-    <span class="right">TECHNICAL REVIEW&nbsp;&nbsp;·&nbsp;&nbsp;SEPTEMBER 2026</span>
-</header>
-
-<div class="eyebrow">03 · Findings</div>
-
-<h1>What matters, in order</h1>
-
-<p class="subtitle">
-    The first two are blockers. The rest are important hardening work.
-</p>
-
-<table class="table">
-
-<thead>
-
-<tr>
-    <th style="width:12%">Level</th>
-    <th style="width:20%">Area</th>
-    <th style="width:37%">What can go wrong</th>
-    <th>What to do</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr class="critical-row">
-    <td class="level critical">CRITICAL</td>
-    <td><strong>Identity database</strong></td>
-    <td>
-        The Riyadh VM is a single Postgres node.
-        A disk problem or kernel failure can stop Nafath verification
-        and new-user onboarding.
-    </td>
-    <td>
-        Move to OCI Database with PostgreSQL in Riyadh.
-        Use managed backups and HA where available.
-    </td>
-</tr>
-
-<tr class="critical-row">
-    <td class="level critical">CRITICAL</td>
-    <td><strong>Identity data link</strong></td>
-    <td>
-        EU and KSA Postgres are connected through application-level
-        references. That creates race conditions and a risk that
-        identity-linked data crosses the border.
-    </td>
-    <td>
-        Replace the reference with a one-way UUID.
-        Keep the National ID only in the KSA database.
-    </td>
-</tr>
-
-<tr class="high-row">
-    <td class="level high">HIGH</td>
-    <td><strong>Nafath credentials</strong></td>
-    <td>
-        API credentials live on the VM filesystem.
-        There is no clean rotation path and the VM becomes a valuable compromise target.
-    </td>
-    <td>
-        Store credentials in OCI Vault and fetch them at runtime.
-        Turn on automatic rotation.
-    </td>
-</tr>
-
-<tr class="high-row">
-    <td class="level high">HIGH</td>
-    <td><strong>Nafath outbound IP</strong></td>
-    <td>
-        Scale-to-zero compute can change its outbound address.
-        Government APIs commonly require a fixed allowlisted IP.
-    </td>
-    <td>
-        Use an OCI NAT Gateway with a reserved public IP
-        and allowlist that address.
-    </td>
-</tr>
-
-<tr class="high-row">
-    <td class="level high">HIGH</td>
-    <td><strong>Too many cloud vendors</strong></td>
-    <td>
-        Adding another KSA cloud for the connector adds
-        a second contract and another security boundary.
-    </td>
-    <td>
-        Stay on OCI. Keep the identity path in one in-Kingdom tenancy.
-    </td>
-</tr>
-
-<tr class="medium-row">
-    <td class="level medium">MEDIUM</td>
-    <td><strong>Database connections</strong></td>
-    <td>
-        Direct 5432 connections from serverless functions can
-        exhaust the connection limit during normal traffic.
-    </td>
-    <td>
-        Route application traffic through Supavisor in transaction mode.
-    </td>
-</tr>
-
-<tr class="medium-row">
-    <td class="level medium">MEDIUM</td>
-    <td><strong>Payment reconciliation</strong></td>
-    <td>
-        A payment can succeed while the booking write fails, or the reverse.
-        The system needs a way to find these mismatches.
-    </td>
-    <td>
-        Use one idempotency key per checkout and reconcile against
-        Moyasar / Tabby settlement data.
-    </td>
-</tr>
-
-<tr class="medium-row">
-    <td class="level medium">MEDIUM</td>
-    <td><strong>Vercel usage</strong></td>
-    <td>
-        For photo-heavy listings, Edge Requests are likely to
-        become a cost problem before raw bandwidth does.
-    </td>
-    <td>
-        Serve listing images from zero-egress storage and alert
-        before the included request quota is exhausted.
-    </td>
-</tr>
-
-</tbody>
-
-</table>
-
-<div class="rule">
-
-```
-<strong>One practical rule</strong>
-
-<p>
-    Do not try to solve all eight findings at once.
-    Fix identity first, then harden secrets and networking,
-    then clean up database connections and payment reconciliation.
-</p>
-```
-
-</div>
-
-<div class="footer">
-    <span>04</span>
-    <span>Prepared for Akenna evaluation only</span>
-</div>
-
-</section>
-
-<!-- =========================================================
-     PAGE 5
-     ========================================================= -->
-
-<section class="page">
-
-<header class="top">
-    <span>AKENNA</span>
-    <span class="right">TECHNICAL REVIEW&nbsp;&nbsp;·&nbsp;&nbsp;SEPTEMBER 2026</span>
-</header>
-
-<div class="eyebrow">04 · Implementation</div>
-
-<h1>How I would run the change</h1>
-
-<p class="subtitle">
-    Keep the migration boring. The identity path is the part that deserves the most care.
-</p>
-
-<div class="steps">
-
-```
-<div class="section-title">
-    Nafath connector
-</div>
-
-<div class="step">
-    <span class="n">01</span>
-    <strong>Compute</strong>
-    <p>
-        Run the connector as an OCI Container Instance rather than maintaining a VM.
-        It can restart automatically and scale to zero when idle.
-    </p>
-</div>
-
-<div class="step">
-    <span class="n">02</span>
-    <strong>Database</strong>
-    <p>
-        Use OCI Database with PostgreSQL in Riyadh.
-        Keep the database private and use managed backups / point-in-time recovery.
-    </p>
-</div>
-
-<div class="step">
-    <span class="n">03</span>
-    <strong>Secrets</strong>
-    <p>
-        Put Nafath credentials in OCI Vault.
-        The container reads them at runtime; nothing sensitive is stored in an env file on disk.
-    </p>
-</div>
-
-<div class="step">
-    <span class="n">04</span>
-    <strong>Network</strong>
-    <p>
-        Put the connector in a private subnet and send Nafath traffic through
-        an OCI NAT Gateway with a reserved public IP.
-    </p>
-</div>
-
-<div class="step">
-    <span class="n">05</span>
-    <strong>Backups</strong>
-    <p>
-        Once a month, automatically restore a backup to a scratch instance.
-        A backup that has never been restored is not a tested backup.
-    </p>
-</div>
-
-<div class="recovery">
-
-    <strong>Recovery targets</strong>
-
-    <p>
-        Target an RPO measured in minutes through continuous WAL and an RTO of
-        under one hour for a full regional failure. The restore should be an
-        automated console action, not a manual DBA exercise.
-    </p>
-
-</div>
-```
-
-</div>
-
-<div class="payments">
-
-```
-<div class="section-title">
-    Payments
-</div>
-
-<div class="step">
-    <strong>One key per checkout</strong>
-    <p>
-        Use the same idempotency key for the payment attempt and the booking write
-        so a retry cannot double-charge or double-book.
-    </p>
-</div>
-
-<div class="step">
-    <strong>Verify webhooks</strong>
-    <p>
-        Check Moyasar and Tabby signatures before acting on webhook payloads.
-        Keep the raw payload and verification result for reconciliation.
-    </p>
-</div>
-
-<div class="step">
-    <strong>Explicit booking states</strong>
-    <p>
-        Use a real status flow:
-        pending payment -> paid unconfirmed -> confirmed ->
-        payout pending -> payout complete / failed.
-    </p>
-</div>
-
-<div class="step">
-    <strong>Nightly reconciliation</strong>
-    <p>
-        Compare settlement exports with booking status.
-        This is the one place where a person should need to look.
-    </p>
-</div>
-```
-
-</div>
-
-<div class="footer">
-    <span>05</span>
-    <span>Prepared for Akenna evaluation only</span>
-</div>
-
-</section>
-
-<!-- =========================================================
-     PAGE 6
-     ========================================================= -->
-
-<section class="page">
-
-<header class="top">
-    <span>AKENNA</span>
-    <span class="right">TECHNICAL REVIEW&nbsp;&nbsp;·&nbsp;&nbsp;SEPTEMBER 2026</span>
-</header>
-
-<div class="eyebrow">05 · Monitoring &amp; cost</div>
-
-<h1>What to watch</h1>
-
-<p class="subtitle">
-    A short alert list, a separate cost watchlist, and a simple release checklist.
-</p>
-
-<div class="monitor">
-
-```
-<div class="alerts">
-
-    <h3>Alerts</h3>
-
-    <p class="intro">
-        These are the events that should wake an engineer.
-    </p>
-
-    <div class="alert">
-        <strong>Nafath</strong>
-        <span>
-            Timeout or error rate stays above the agreed threshold.
-        </span>
+    <div class="box">
+        <strong>Identity stays in KSA</strong>
+        <p>There is no application-level join from the EU database into the identity database.</p>
+    </div>
+    <div class="box">
+        <strong>One place to operate</strong>
+        <p>OCI handles the connector, database, secrets and network path instead of a manually maintained VM.</p>
+    </div>
+    <div class="box">
+        <strong>Failures are contained</strong>
+        <p>A container restart does not change the Nafath whitelist IP, and the database is not exposed with a public IP.</p>
     </div>
 
-    <div class="alert">
-        <strong>Payments</strong>
-        <span>
-            Moyasar / Tabby webhook failures stay above the agreed threshold.
-        </span>
-    </div>
-
-    <div class="alert">
-        <strong>Bookings</strong>
-        <span>
-            Booking-to-payout success rate shows a sustained drop.
-        </span>
-    </div>
-
-    <div class="alert">
-        <strong>Database</strong>
-        <span>
-            Postgres connections or CPU reach saturation.
-        </span>
-    </div>
-
-</div>
-
-
-<div class="cost">
-
-    <h3>Cost watch</h3>
-
-    <p class="intro">
-        These do not need paging. They need a dashboard and a monthly check.
-    </p>
-
-    <div class="cost-item">
-
-        <strong>Vercel Edge Requests</strong>
-
-        <p>
-            Photo-heavy listing pages can burn through request quota
-            before bandwidth becomes the main issue.
-        </p>
-
-    </div>
-
-    <div class="cost-item">
-
-        <strong>Image delivery</strong>
-
-        <p>
-            Serve listing images from zero-egress storage instead of routing
-            them through Vercel’s image pipeline.
-        </p>
-
-    </div>
-
-    <div class="cost-item">
-
-        <strong>Build execution</strong>
-
-        <p>
-            Watch CI build minutes; rebuilding on every push can quietly compound cost.
-        </p>
-
-    </div>
-
-    <h3 style="color:var(--green);margin-top:30px">
-        Tooling baseline
-    </h3>
-
+    <h2>One practical rule</h2>
     <p>
-        Sentry is enough for application exceptions.
-        BetterStack or OCI monitoring can cover infrastructure uptime.
-        The important part is the alert policy, not adding more monitoring products.
+        Do not try to solve all eight findings at once.
+        Fix identity first, then harden secrets and networking,
+        then clean up database connections and payment reconciliation.
     </p>
 
-</div>
-```
+    <div class="section-title">Nafath connector</div>
+    <div class="step"><span class="n">01</span><strong>Compute:</strong> Run the connector as an OCI Container Instance rather than maintaining a VM. It can restart automatically and scale to zero when idle.</div>
+    <div class="step"><span class="n">02</span><strong>Database:</strong> Use OCI Database with PostgreSQL in Riyadh. Keep the database private and use managed backups / point-in-time recovery.</div>
+    <div class="step"><span class="n">03</span><strong>Secrets:</strong> Put Nafath credentials in OCI Vault. The container reads them at runtime; nothing sensitive is stored in an env file on disk.</div>
+    <div class="step"><span class="n">04</span><strong>Network:</strong> Put the connector in a private subnet and send Nafath traffic through an OCI NAT Gateway with a reserved public IP.</div>
+    <div class="step"><span class="n">05</span><strong>Backups:</strong> Once a month, automatically restore a backup to a scratch instance. A backup that has never been restored is not a tested backup.</div>
 
-</div>
-
-<div class="dashboard">
-
-```
-<div class="section-title" style="color:var(--blue)">
-    Dashboard only
-</div>
-
-<div class="box">
-
-    <p>
-        CPU / memory — useful context, but not a page by itself.
-        &nbsp;&nbsp;
-        Vercel usage — watch Edge Requests and Fast Data Transfer
-        against the included quota.
-        &nbsp;&nbsp;
-        Build minutes — look for CI jobs rebuilding unnecessarily.
-    </p>
-
-</div>
-```
-
-</div>
-
-<div class="checklist">
-
-```
-<strong>BEFORE RELEASE</strong>
-
-<div class="checks">
-
-    <div class="check">
-        National ID exists only in the KSA database
+    <div class="box">
+        <strong>Recovery targets</strong>
+        <p>Target an RPO measured in minutes through continuous WAL and an RTO of under one hour for a full regional failure. The restore should be an automated console action, not a manual DBA exercise.</p>
     </div>
 
-    <div class="check">
-        Nafath credentials are not stored on disk
+    <div class="section-title">Payments</div>
+    <div class="step"><strong>One key per checkout:</strong> Use the same idempotency key for the payment attempt and the booking write so a retry cannot double-charge or double-book.</div>
+    <div class="step"><strong>Verify webhooks:</strong> Check Moyasar and Tabby signatures before acting on webhook payloads. Keep the raw payload and verification result for reconciliation.</div>
+    <div class="step"><strong>Explicit booking states:</strong> Use a real status flow: pending payment -> paid unconfirmed -> confirmed -> payout pending -> payout complete / failed.</div>
+    <div class="step"><strong>Nightly reconciliation:</strong> Compare settlement exports with booking status. This is the one place where a person should need to look.</div>
+
+    <div class="section-title">Before Release Checklist</div>
+    <div class="checks">
+        <div class="check">National ID exists only in the KSA database</div>
+        <div class="check">Nafath credentials are not stored on disk</div>
+        <div class="check">Outbound Nafath traffic uses one reserved IP</div>
+        <div class="check">Backups have been restored successfully at least once</div>
+        <div class="check">Payment / booking mismatches are reconciled automatically</div>
+        <div class="check">Staging exists and migrations have a rollback path</div>
     </div>
-
-    <div class="check">
-        Outbound Nafath traffic uses one reserved IP
-    </div>
-
-    <div class="check">
-        Backups have been restored successfully at least once
-    </div>
-
-    <div class="check">
-        Payment / booking mismatches are reconciled automatically
-    </div>
-
-    <div class="check">
-        Staging exists and migrations have a rollback path
-    </div>
-
-</div>
-```
-
-</div>
-
-<div class="footer">
-    <span>06</span>
-    <span>Prepared for Akenna evaluation only</span>
-</div>
-
-</section>
 
 </body>
 </html>
